@@ -1,0 +1,13 @@
+{# nav>ul>li*3>a[href="#" title=""] + TAB
+Va générer automatiquement le html des blocs que l'on veut céer
+#}
+
+<nav>
+    <ul>
+        {#  dans href on utilise la donction path de twig puis on met le nom que l'on a définit dans les routes des function situées dans le MainController
+        ça va nous permettre d'avoir le bon chemin pour les pages#}
+        <li><a href="{{ path('main_home') }}" title="Home">Home</a></li>
+        <li><a href="{{ path('main_test') }}" title="Test">Test</a></li>
+        <li><a href="#" title="">Nouvelle Page</a></li>
+    </ul>
+</nav>

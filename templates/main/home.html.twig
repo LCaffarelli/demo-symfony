@@ -1,13 +1,9 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+
+{# On fait heriter home de base #}
+{% extends 'base.html.twig' %}
+
+{# On redefini le block mere (base) dans la fille (home). On lui donne la valeur de tout ce qu'il y a dans le block body #}
+{% block body %}
 <h1>Coucou</h1>
 {# ma zone de commentaire
 sur plusieurs lignes. Manière d'écrire des commentaires propre à twig
@@ -94,8 +90,9 @@ Ici la date d'aujourd'hui, now est un mot clef que twig connait
 
 <p>Dans un an, nous serons {{ "+1 year"|date('d/m/y') }}</p>
 <p>Dans 5 ans, nous serons {{ "+5 year"|date('d/m/y') }}</p>
-<p>Dans 26 ans, nous serons {{ "+1 year"|date('d/m/y') }}</p>
+<p>Dans 26 ans, nous serons {{ "+26 year"|date('d/m/Y') }}</p>
 
-
-</body>
-</html>
+{% endblock %}
+{# On redefini le block mere ici. On lui donne la valeur "valeur par defaut dans la page mère | Home"
+parent() est une fonction de twig equivalente au super() en Java #}
+ {% block title %}{{parent()}} | Home{%endblock %}
