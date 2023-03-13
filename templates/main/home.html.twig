@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<h1>Coucou</h1>
+{# ma zone de commentaire
+sur plusieurs lignes. Manière d'écrire des commentaires propre à twig
+#}
+
+{# On déclare une variable avec accolades et pourcetages #}
+{% set nom='Martin' %}
+{% set prenom='camille' %}
+
+{# On utilise celle ci grace aux moustaches (double accolades) #}
+{# On peut aussi utiliser des filtres pour formater des variables  #}
+<h1> {{ nom | lower }}</h1>
+<h1> {{ nom }}{{ prenom }}</h1>
+<h1> {{ nom }} {{ prenom }}</h1>
+<h1> {{ nom | upper }}</h1>
+<h1> {{ nom | length }}</h1>
+<h1>{{ prenom |capitalize }}</h1>
+{# Création d'un tableau de couleurs #}
+{% set tableau_couleurs = ["yellow","orange","red","purple","indigo","blue","green"] %}
+
+{# length marche pour les variables et les tableaux #}
+<div>Il y a {{ tableau_couleurs| length }} couleurs dans mon tableau</div>
+
+{# On fait une boucle pour lire le tableau #}
+{% for c in tableau_couleurs %}
+    {# On vient afficher celui ci. On utilise meme ses couleurs pour le style="" #}
+    <div style="background-color: {{ c }}">{{ c }}</div>
+
+    {# Permet de savoir combien de boucle on a fait #}
+    <div>{{ loop.index }}</div>
+
+    {# On fait une condition #}
+    {% if loop.last %}
+        <div>Derniere iteration</div>
+    {% endif %}
+{% endfor %}
+
+{# On vient créer un objet #}
+{% set film = {
+    title : 'Ca',
+    year : 2017,
+    realisateur : 'Muschietti'
+} %}
+
+{# Pour lire un element de l'objet #}
+<p>{{ film.title }}</p>
+
+{# Pour lire l'objet en entier , on va afficher "la clé : la valeur"  #}
+{% for key, val in film %}
+    <div>{{ key }} : {{ val }}</div>
+{% endfor %}
+
+{# On peut créer un tableau vide #}
+{% set actors=[] %}
+
+{# Particulier à twig, on peut faire directement un else dans un boucle, celle ci lisant un tableau vide va retourner
+donc le else soit "Pas d'acteurs"#}
+{% for a in actors %}
+    <div>{{ a }}</div>
+{% else %}
+    <div>Pas d'acteurs</div>
+{% endfor %}
+
+{# Ternaires
+On rajoute un s à "couleur" si la taille du tableau est supérieur à 1
+#}
+<p>Il y a {{ tableau_couleurs| length }} couleur{{ tableau_couleurs|length>1 ?'s' :''}} dans mon tableau</p>
+
+{# Permet d'afficher le tableau sur une seule ligne avec une jointure, ici un - #}
+<p>{{ tableau_couleurs| join ('-') }}</p>
+
+{# Permet d'afficher le tableau avec un saut de ligne avec une jointure, ici un <br>. Le raw sert à ne pas afficher le br dans le code html #}
+<p>{{ tableau_couleurs| join ('<br>')|raw }}</p>
+
+{# Filtre sur les dates
+Ici la date d'aujourd'hui, now est un mot clef que twig connait
+
+    Pour changer le fuseau horaire on peut passer par wamp ou par le fichier init
+#}
+<p>Aujourd'hui nous sommes le {{ "now" | date('d/m/y H:i') }}</p>
+
+{# Y pour 2023 et y pour 23 #}
+<p>Aujourd'hui nous sommes en {{ "now" | date('Y') }}</p>
+
+<p>Dans un an, nous serons {{ "+1 year"|date('d/m/y') }}</p>
+<p>Dans 5 ans, nous serons {{ "+5 year"|date('d/m/y') }}</p>
+<p>Dans 26 ans, nous serons {{ "+1 year"|date('d/m/y') }}</p>
+
+
+</body>
+</html>
