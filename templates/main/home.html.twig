@@ -75,7 +75,8 @@ On rajoute un s à "couleur" si la taille du tableau est supérieur à 1
 {# Permet d'afficher le tableau sur une seule ligne avec une jointure, ici un - #}
 <p>{{ tableau_couleurs| join ('-') }}</p>
 
-{# Permet d'afficher le tableau avec un saut de ligne avec une jointure, ici un <br>. Le raw sert à ne pas afficher le br dans le code html #}
+{# Permet d'afficher le tableau avec un saut de ligne avec une jointure, ici un <br>. Le raw permet lorqu'on utilise des balises html dans une variable, de les faires fonctionner et non juste
+de l'afficher dans celle ci. En l'occurence ici on aura un saut de ligne au lieu d'avoir '<br>' qui s'affichera à l'écran #}
 <p>{{ tableau_couleurs| join ('<br>')|raw }}</p>
 
 {# Filtre sur les dates

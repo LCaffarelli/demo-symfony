@@ -4,10 +4,11 @@ Va générer automatiquement le html des blocs que l'on veut céer
 
 <nav>
     <ul>
-        {#  dans href on utilise la fonction path de twig puis on met le nom que l'on a définit dans les routes des function situées dans le MainController
-        ça va nous permettre d'avoir le bon chemin pour les pages#}
+        {#  dans href on utilise la fonction path de twig puis on met le nom que l'on a définit dans les routes des function situées dans le MainController ou dans le SerieController
+        ça va nous permettre d'avoir le bon chemin pour les pages. On precise le chemin du NAME #}
         <li><a href="{{ path('main_home') }}" title="Home">Home</a></li>
         <li><a href="{{ path('main_test') }}" title="Test">Test</a></li>
-        <li><a href="#" title="">Nouvelle Page</a></li>
+        <li><a href="{{ path('serie_list') }}">Séries</a></li>
+        <li><a href="{{ path('serie_create') }}" title="">Nouvelle Série</a></li>
     </ul>
 </nav>
