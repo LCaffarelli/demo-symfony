@@ -1,0 +1,39 @@
+<!doctype html>
+{# FICHIER BASE VA ETRE TOUTE LA BASE DE NOS FICHIERS HTML. C'EST LA MERE DES AUTRES PAGES. C'EST LE SQUELETTE DE TOUTES NOS PAGES.
+ (PAR EXEMPLE HOME EN HERITE). Toutes nos pages vont ressembler à celle ci #}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('CSS/app.css') }}"> {#  Fonctionne aussi avec l'autocomplétion, commencer à mettre le chemin +tab ici CS+TAB
+    les asset ne fonctionnent que pour les routes propre au projet, ne fonctionne pas pour les urls internet, on devra mettre le lien entier#}
+    {# Pour choisirr la police on va dans googgle font, on la choisit puis on copie les liens fournis dans le head  #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;1,100&display=swap" rel="stylesheet">
+    {# On ajoute le logo que l'on souhaite mettre #}
+    <link rel="icon" href="{{ asset('img/icon.png') }}">
+    <title>{% block title %}Séries{% endblock %}</title> {# "Séries" = valeur donnée par defaut #}
+</head>
+<body>
+
+{# Permet d'appeler le fichier dans le dossier inc (pour include) qui correspond à la nav barre. Include est utile pour tout ce qui est code que l'on va utilisr plusieurs fois #}
+{% include "inc/nav.html.twig" %}
+
+<header>
+    <h1>
+        <a href="{{ path('main_home') }}"><img src="{{ asset('img/logo.svg') }}"></a>
+    </h1>
+</header>
+<main>
+    {# On va creer un bloc avec twig pour que toutes les filles qui vont heriter de base. En l'occurence ici on va afficher ce qu'il y a dans home #}
+    {% block body %}{% endblock %}
+</main>
+
+<footer>
+    {% include "inc/nav.html.twig" %}
+    {{"now"|date ('Y') }} Séries
+</footer>
+</body>
+</html>
