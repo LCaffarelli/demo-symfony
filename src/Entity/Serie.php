@@ -47,9 +47,11 @@ class Serie
     #[ORM\Column]
     private ?int $tmdbId = null;
 
+    //Correspond à la création de l'entrée pas la création de la série
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreated = null;
 
+    //Correspond à la modification de l'entrée pas la modification de la série
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateModified = null;
 

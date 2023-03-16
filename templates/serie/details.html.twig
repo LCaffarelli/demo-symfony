@@ -1,10 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    todo : {{ parent() }} | mettre le titre de la série
+{{ parent() }} |{{serie.name }}
 {% endblock %}
 
 {% block body %}
-    todo : titre de la série + les autres attributs
+    <div>
+        <h2>{{ serie.name }}</h2>
+        <div>
+            <label for="">Genre :</label>
+            <p>{{ serie.genre }}</p>
+        </div>
+        <div>
+            <label for="">Résumé : </label>
+            <p>{{ serie.overview }}</p>
+
+        </div>
+
+    </div>
 {% endblock %}
 
