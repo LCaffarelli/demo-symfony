@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-{{ parent() }} | {{serie.name }}
+    {{ parent() }} | {{ serie.name }}
 {% endblock %}
 
 {% block body %}
@@ -12,10 +12,31 @@
             <p>{{ serie.genre }}</p>
         </div>
         <div>
+            <p>Popularité : {{ serie.popularity }}</p>
+           <p>Vote : {{ serie.vote }}</p>
+           <p>Date de première diffusion : {{ serie.firstAirDate | date ('d/m/Y') }}</p>
+        </div>
+        <div>
             <label for="">Résumé : </label>
             <p>{{ serie.overview }}</p>
-
         </div>
+        <section class="seasons">
+            <h3>Saisons : </h3>
+            {# On fait une boucle pour pouvoir recuperer les saisons qui ont ete liées à l'entité série #}
+            {% for season in serie.seasons %}
+                <article>
+                    {# On récupere les images des saisons, pour l'alt on met le nom de la série et le numero de la saison #}
+                    <img src="{{ asset('img/posters/seasons/'~season.poster) }}"
+                         alt="{{ serie.name }} season#{{ season.number }}">
+                    <div>
+                        <h4>{{ season.number }}</h4>
+                        <div>{{ season.overview }}</div>
+                        <div>{{ season.firstAirDate | date('d/m/Y') }}</div>
+                    </div>
+                </article>
+            {% endfor %}
+
+        </section>
 
     </div>
 {% endblock %}

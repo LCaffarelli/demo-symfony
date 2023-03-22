@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Serie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -68,6 +69,13 @@ class SerieRepository extends ServiceEntityRepository
         //On va créé une variable afin d'utiliser le queryBuilder. Il faut mettre un alias en parametre. Ainsi on aura pas besoin d'appeler l'entité
         $queryBuilder=$this->createQueryBuilder('s');
 
+        //On vient faire la jointure, ici on utilise un left join car on ne sait pas si toutes les series auront des saisons.
+        // On precise la colonne a lier avec un alias, et le nouvel alias de l'autre table
+        $queryBuilder->leftJoin('s.seasons','seas');
+
+        //On ajoute dans le SELECT de la requete tout ce qu'on peut trouver dans season
+        $queryBuilder->addSelect('seas');
+
         //Pour faire mes filtre je dois utiliser la methode andWhere.
         $queryBuilder->andWhere('s.popularity >100');
         $queryBuilder->andWhere('s.vote >8');
@@ -82,8 +90,11 @@ class SerieRepository extends ServiceEntityRepository
         //Ainsi on va pouvoir passer des limitations
         $query->setMaxResults(30);
 
+        //Nous permet d'obtenir les 30 séries et non juste 30 résultats
+        $paginator= new Paginator($query);
+
         //On retourne les resultats
-        return $query->getResult();
+        return $paginator;
     }
 
 //REQUETES GENEREES AUTOMATIQUEMENTS

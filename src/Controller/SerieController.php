@@ -55,6 +55,13 @@ class SerieController extends AbstractController
     public function details(int $id, SerieRepository $serieRepository): Response
     {
         $serie =$serieRepository->find($id);
+        dump($serie);
+
+
+
+        //dump pour verifier s'il a bien trouvé les saisons
+        dump($serie);
+
         return $this->render("/serie/details.html.twig",['serie'=>$serie]);
         //passer la serie à twig
     }
