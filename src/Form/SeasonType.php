@@ -23,6 +23,7 @@ class SeasonType extends AbstractType
             //serie ne peut pas etre lu car entité , donc on precise son type, ici EntityType. On fait aussi dans les parametres un queryBuilder pour classer par ordre alphabétique les séries
             ->add('serie', EntityType::class, ['class' => Serie::class, 'choice_label' => 'name', 'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('s')->orderBy('s.name', order: 'ASC');
+
             }]);
     }
 
