@@ -26,6 +26,14 @@
         <a href="{{ path('main_home') }}"><img src="{{ asset('img/logo.svg') }}"></a>
     </h1>
 </header>
+
+{# On peut mettre 2 valeurs dans la boucle , ici label est la clef et message est la valeur. Ces boucles permettent d'afficher les message flash  #}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash-{{ label }}"></div>{{ message }}
+    {% endfor %}
+{% endfor %}
+
 <main>
     {# On va creer un bloc avec twig pour que toutes les filles qui vont heriter de base. En l'occurence ici on va afficher ce qu'il y a dans home #}
     {% block body %}{% endblock %}

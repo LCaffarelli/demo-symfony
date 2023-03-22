@@ -4,12 +4,12 @@
     <section class="series-list">
         {% for serie in  series %}
             {# On vient creer une balise article pour lire les donnée #}
-            <artcle>
+            <article>
                 {# le tilde ~ sert à la concaténation = propre à twig
                 Dans le path on met un lien qui amène au detail de la serie en fonction de son id
                 #}
                 <a href="{{ path('serie_details',{'id':serie.id}) }}"><img src="{{ asset('img/posters/series/'~serie.poster) }}" alt="poster de la serie {{ serie.name }}"></a>
-            </artcle>
+            </article>
         {% endfor %}
 
     </section>

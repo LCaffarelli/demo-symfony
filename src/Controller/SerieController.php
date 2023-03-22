@@ -4,6 +4,7 @@ namespace App\Controller;
 /*Controller créé grace à une commande sur le termninal*/
 
 use App\Entity\Serie;
+use App\Form\SerieType;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -60,7 +61,7 @@ class SerieController extends AbstractController
 
     /*Fonction pour créer une sérié*/
     #[Route('/create', name: 'create')]
-    public function create(Request $request): Response
+    public function create(Request $request,EntityManagerInterface $entityManager): Response
     { // Request permet de recuperer ce qui va etre envoyé par l'ulisateur
 
         /*dump permet de voir l'etat de quelque chose en affichant une toolbar sur la page. Si on clique sur l'un des onglets de cette barre on peut acceder au profiler
@@ -68,7 +69,40 @@ class SerieController extends AbstractController
         Du coup on va utiliser dd (dump die) pour arreter le traitement*/
         //dump($request);
         //dd($request);
-        return $this->render('/serie/create.html.twig');
+
+        //Etape 1 : on vient créer une instance de Serie
+        $serie=new Serie();
+
+        //Etape 2 : on vient créer une instance de SerieType. On y passe la valeur serie pour qu'il puisse cécuperer tous les champs de l'entité Serie
+        $serieForm=$this->createForm(SerieType::class,$serie);
+
+        dump($serie);
+
+        //Permet d'injecter toutes les données du formulaire dans l'entité Serie
+        $serieForm->handleRequest($request);
+
+        dump($serie);
+
+        //On les envoie en BDD. On verifie que l'on enregistre ou qu'on affiche juste le formulaire
+        if($serieForm->isSubmitted() && $serieForm->isValid()){
+            //comme le date_created ne peut etre null on va le valorisé ici à la date du jour
+            $serie->setDateCreated(new \DateTime('now'));
+
+            //Va créer l'objet pour la base de données
+            $entityManager->persist($serie);
+            //L'envoie dans la BDD
+            $entityManager->flush();
+
+            //Message flash pour dire que tout a bien été enregistré. Le premier est le type de message (pour la CSS) et le deuxieme est ce qui va etre affiché.
+            $this->addFlash('success','Série ajoutée !');
+
+            //Retour sur la page de details de la série enregistrée. On precise la route, puis l'id (car dans les params) dans un tableau (obligatoire car demandé par la methode)
+            return $this->redirectToRoute('serie_details',['id'=>$serie->getId()]);
+        }
+
+        dump($request);
+        //Etape 3 : on le passe dans le fichier twig. le createView est necessaire pour la version Symfony 6.1 mais pas 6.2
+        return $this->render('/serie/create.html.twig',['serieForm'=> $serieForm ->createView()]);
     }
 
     /*On va venir creer un manager dans la fonction demo*/
@@ -91,7 +125,7 @@ class SerieController extends AbstractController
 
         dump($serie);
 
-        //Va créer l'objet dans la base de données
+        //Va créer l'objet pour la base de données
         $entityManager->persist($serie);
         //L'envoie dans la BDD
         $entityManager->flush();
