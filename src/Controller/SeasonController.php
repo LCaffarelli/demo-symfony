@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Season;
 use App\Form\SeasonType;
+use App\Repository\SeasonRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,11 +31,20 @@ class SeasonController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Saison ajoutée !');
-           return $this->redirectToRoute('serie_list');
+            return $this->redirectToRoute('serie_list');
         }
 
         return $this->render('season/create.html.twig', [
             'seasonForm' => $seasonForm,
         ]);
+    }
+
+    #[Route ('dissociate', name: 'dissociate')]
+    public function dissociateSeasonWithSerie(SeasonRepository $seasonRepository)
+    {
+        $season = $seasonRepository->find(10);
+        $season->setSerie(null);
+        $series = [];
+        return $this->render('serie/list.html.twig', ['series' => $series]);
     }
 }

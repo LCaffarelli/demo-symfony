@@ -13,8 +13,8 @@
         </div>
         <div>
             <p>Popularité : {{ serie.popularity }}</p>
-           <p>Vote : {{ serie.vote }}</p>
-           <p>Date de première diffusion : {{ serie.firstAirDate | date ('d/m/Y') }}</p>
+            <p>Vote : {{ serie.vote }}</p>
+            <p>Date de première diffusion : {{ serie.firstAirDate | date ('d/m/Y') }}</p>
         </div>
         <div>
             <label for="">Résumé : </label>
@@ -39,5 +39,17 @@
         </section>
 
     </div>
+
+    <div>
+
+        {# Risque de faille de sécurité alors on va faire une formulaire avec un input hidden pour y mettre un token #}
+        <form action="{{ path('serie_delete',{'id':serie.id}) }}">
+
+            {# le _ pour le nom du token est une convention #}
+            <input type="hidden" name="_token" value="{{ csrf_token('delete'~serie.id) }}">
+            <button>Supprimer</button>
+        </form>
+    </div>
+
 {% endblock %}
 

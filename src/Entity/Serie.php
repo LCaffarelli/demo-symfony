@@ -74,7 +74,8 @@ class Serie
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateModified = null;
 
-    #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Season::class, orphanRemoval: true)]
+    //orphan commenté car on a fait une suppression manuelle
+    #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Season::class, /*orphanRemoval: true*/)]
     private Collection $seasons;
 
     public function __construct()

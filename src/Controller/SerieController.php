@@ -28,47 +28,76 @@ class SerieController extends AbstractController
      *
      * Grace au prefix on a plus qu'a mettre ce que l'on veut dans la route et juste le nom de la function */
     #[Route('', name: 'list')]
-
     /*On recupere les repository en l'injectant des les params*/
     public function list(SerieRepository $serieRepository): Response
     {
         //Liste TOUTES les séries
         //$series=$serieRepository->findAll();
-       // dump($series);
+        // dump($series);
 
         //Aller chercher les 30 séries les plus populaires avec DOCTRINE. On fait un tableau vide pour recuperer, on precise par quoi on va classer (popularity) et si c'est croissant ou décroissant, et le nombre que l'on veut recuperer (30)
         //$series=$serieRepository->findBy([],['popularity'=>'DESC'],30);
 
         ////Aller chercher les 30 séries les plus populaires avec DQL. On fait une variable qui appelle le repository et on appelle la fonction que l'on a créée avec la requete
-        $series=$serieRepository->findBestSeries();
+        $series = $serieRepository->findBestSeries();
         dump($series);
 
         //on peut enlever le controller mis par defaut
         //Dans le render on retourne donc un lien et une clef
-        return $this->render('serie/list.html.twig',['series'=>$series]);
+        return $this->render('serie/list.html.twig', ['series' => $series]);
     }
 
     /*On vient créeer la une nouvelle fonction qui va chercher la série en fonction de son id dans la base de donnée et de l'afficher
     on a mis l'id de la serie en parametre
     */
     #[Route ('/details/{id}', name: 'details')]
-    public function details(int $id, SerieRepository $serieRepository): Response
+    public function details(Serie $serie): Response
     {
-        $serie =$serieRepository->find($id);
+        //Grace à la commande composer require sensio/framework-extra-bundle  on peut passer l'entité en parametre
+        //$serie = $serieRepository->find($id);
         dump($serie);
-
 
 
         //dump pour verifier s'il a bien trouvé les saisons
         dump($serie);
 
-        return $this->render("/serie/details.html.twig",['serie'=>$serie]);
+        //Vu que dans les params Serie $serie le message se fait automatiquement
+//        if(!$serie){
+//            throw $this->createNotFoundException('This serie does not exist');
+//        }
+        return $this->render("/serie/details.html.twig", ['serie' => $serie]);
         //passer la serie à twig
+    }
+
+    //On supprime manuellement sinon on peut utiliser l'action du orphan avec un simple remove
+    #[Route ('/delete/{id}', name: 'delete')]
+    public function delete(Serie $serie, SerieRepository $serieRepository,EntityManagerInterface $entityManager, Request $request): Response
+    {
+        //Grace à la commande composer require sensio/framework-extra-bundle  on peut passer l'entité en parametre
+        //On trouve la série
+        //$serie = $serieRepository->find($id);
+
+        //On verifie si le token est bon, si oui on pourra supprimer la série
+        if($this->isCsrfTokenValid('delete'.$serie->getId(),$request->get('_token'))){
+            //On boucle sur les saisosn de la série
+            foreach ($serie->getSeasons() as $season){
+                //Pour pouvoir les supprimer
+                $entityManager->remove($season);
+            }
+            //On supprime ensuite la série
+            $entityManager->remove($serie);
+
+            //On envoie l'action en BDD
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('serie_list');
+
     }
 
     /*Fonction pour créer une sérié*/
     #[Route('/create', name: 'create')]
-    public function create(Request $request,EntityManagerInterface $entityManager): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
     { // Request permet de recuperer ce qui va etre envoyé par l'ulisateur
 
         /*dump permet de voir l'etat de quelque chose en affichant une toolbar sur la page. Si on clique sur l'un des onglets de cette barre on peut acceder au profiler
@@ -78,10 +107,10 @@ class SerieController extends AbstractController
         //dd($request);
 
         //Etape 1 : on vient créer une instance de Serie
-        $serie=new Serie();
+        $serie = new Serie();
 
         //Etape 2 : on vient créer une instance de SerieType. On y passe la valeur serie pour qu'il puisse cécuperer tous les champs de l'entité Serie
-        $serieForm=$this->createForm(SerieType::class,$serie);
+        $serieForm = $this->createForm(SerieType::class, $serie);
 
         dump($serie);
 
@@ -91,7 +120,7 @@ class SerieController extends AbstractController
         dump($serie);
 
         //On les envoie en BDD. On verifie que l'on enregistre ou qu'on affiche juste le formulaire
-        if($serieForm->isSubmitted() && $serieForm->isValid()){
+        if ($serieForm->isSubmitted() && $serieForm->isValid()) {
             //comme le date_created ne peut etre null on va le valorisé ici à la date du jour
             $serie->setDateCreated(new \DateTime('now'));
 
@@ -101,15 +130,15 @@ class SerieController extends AbstractController
             $entityManager->flush();
 
             //Message flash pour dire que tout a bien été enregistré. Le premier est le type de message (pour la CSS) et le deuxieme est ce qui va etre affiché.
-            $this->addFlash('success','Série ajoutée !');
+            $this->addFlash('success', 'Série ajoutée !');
 
             //Retour sur la page de details de la série enregistrée. On precise la route, puis l'id (car dans les params) dans un tableau (obligatoire car demandé par la methode)
-            return $this->redirectToRoute('serie_details',['id'=>$serie->getId()]);
+            return $this->redirectToRoute('serie_details', ['id' => $serie->getId()]);
         }
 
         dump($request);
         //Etape 3 : on le passe dans le fichier twig. le createView est necessaire pour la version Symfony 6.1 mais pas 6.2
-        return $this->render('/serie/create.html.twig',['serieForm'=> $serieForm ->createView()]);
+        return $this->render('/serie/create.html.twig', ['serieForm' => $serieForm->createView()]);
     }
 
     /*On va venir creer un manager dans la fonction demo*/
